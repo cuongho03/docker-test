@@ -26,7 +26,6 @@
 
 <body id="page-top">
 
-HTML CSS JSResult
 <div id="window" class="window">
     <div class="icon-computer text-center" id="icon-computer" ondblclick="opencom()">
         <img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500505053/thumb_14339670430This_PC_fo5lbo.png" class="img-responsive">
@@ -897,8 +896,16 @@ HTML CSS JSResult
     </footer>
 
 </div>
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-<script src="js/test.js"></script>
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for this template -->
+ 
+  <script src="js/test.js"></script>
 </body>
 
 </html>
