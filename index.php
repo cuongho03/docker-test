@@ -24,7 +24,7 @@
 
 </head>
 
-<body id="page-top">
+<body >
 
 <div id="window" class="window">
     <div class="icon-computer text-center" id="icon-computer" ondblclick="opencom()">
