@@ -207,7 +207,9 @@ footer.footer .right i {
     -moz-transition: all .1s ease-in-out;
     transition: all .1s ease-in-out;
 }
-
+.start-window .fluid-container i {
+  cursor: pointer;
+}
 .start-window .fluid-container.activecontainer {
     padding-top: 0;
 }
@@ -563,9 +565,9 @@ div .resizer {
     height: 50%;
 }
 
-body {
+/* body {
     background-color: #000;
-}
+} */
 
 .option-box {
     position: fixed;

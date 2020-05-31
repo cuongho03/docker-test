@@ -1,0 +1,1 @@
+export const apiUploadUrl = "http://128.199.245.207:8080/files"

@@ -1,0 +1,14 @@
+.Upload {
+  .ant-page-header-heading span{
+    color: #fff !important
+  }
+  .ant-breadcrumb{
+    margin-bottom: 10px;
+    .ant-breadcrumb-link{
+      color: #838687 !important;
+    }
+    .ant-breadcrumb-link a,.ant-breadcrumb-separator{
+      color: #fff !important;
+    }
+  }
+}
