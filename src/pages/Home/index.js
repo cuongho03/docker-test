@@ -940,7 +940,6 @@ class Home extends Component {
                                     {item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? (
                                       <img className="media-object" src={item.link} width={390} height={65} alt="..." />
                                     ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
-
                                   </div>
                                   <div>
                                     {item.name}
