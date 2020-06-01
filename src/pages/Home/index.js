@@ -128,23 +128,23 @@ class Home extends Component {
         that.fadeOutByMe(document.getElementById('start-window-fade'));
         that.fadeOutByMe(document.getElementById('start-window'));
       }
-      if (computerOverlay.style.transform == "scale(1)") {
+      if (computerOverlay.style.transform === "scale(1)") {
         computerOverlay.style.transform = "scale(0)";
         document.getElementById('a1').style.borderBottom = '2px solid #76b9ed';
       }
-      if (imageOverlay.style.transform == "scale(1)") {
+      if (imageOverlay.style.transform === "scale(1)") {
         imageOverlay.style.transform = "scale(0)";
         document.getElementById('a2').style.borderBottom = '2px solid #76b9ed';
       }
-      if (videoOverlay.style.transform == "scale(1)") {
+      if (videoOverlay.style.transform === "scale(1)") {
         videoOverlay.style.transform = "scale(0)";
         document.getElementById('a3').style.borderBottom = '2px solid #76b9ed';
       }
-      if (noteOverlay.style.transform == "scale(1)") {
+      if (noteOverlay.style.transform === "scale(1)") {
         noteOverlay.style.transform = "scale(0)";
         document.getElementById('a4').style.borderBottom = '2px solid #76b9ed';
       }
-      if (aboutOverlay.style.transform == "scale(1)") {
+      if (aboutOverlay.style.transform === "scale(1)") {
         aboutOverlay.style.transform = "scale(0)";
         document.getElementById('a5').style.borderBottom = '2px solid #76b9ed';
       }
@@ -161,7 +161,7 @@ class Home extends Component {
     window.$('#myTabs li:eq(2) a').tabs('show') // Select third tab (0-indexed)
     // onClick
     document.getElementById('a5').onclick = function () {
-      if (aboutOverlay.style.transform == "scale(1)") {
+      if (aboutOverlay.style.transform === "scale(1)") {
         aboutOverlay.style.transform = "scale(0)";
         this.style.borderBottom = '2px solid #76b9ed';
       } else {
@@ -182,7 +182,7 @@ class Home extends Component {
     }
 
     document.getElementById('a3').onclick = function () {
-      if (videoOverlay.style.transform == "scale(1)") {
+      if (videoOverlay.style.transform === "scale(1)") {
         videoOverlay.style.transform = "scale(0)";
         this.style.borderBottom = '2px solid #76b9ed';
       } else {
@@ -191,7 +191,7 @@ class Home extends Component {
       }
     }
     document.getElementById('a4').onclick = function () {
-      if (noteOverlay.style.transform == "scale(1)") {
+      if (noteOverlay.style.transform === "scale(1)") {
         noteOverlay.style.transform = "scale(0)";
         this.style.borderBottom = '2px solid #76b9ed';
       } else {
@@ -202,7 +202,7 @@ class Home extends Component {
 
 
     document.getElementById('a1').onclick = function () {
-      if (computerOverlay.style.transform == "scale(1)") {
+      if (computerOverlay.style.transform === "scale(1)") {
         computerOverlay.style.transform = "scale(0)";
         this.style.borderBottom = '2px solid #76b9ed';
       } else {

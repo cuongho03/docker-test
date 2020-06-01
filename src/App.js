@@ -3,20 +3,30 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from "react"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
+import { connect } from "react-redux"
 import './App.css';
 import 'antd/dist/antd.css';
 import Home from "./pages/Home"
+import Resgister from "./pages/Resgister"
 import UploadFile from "./pages/Upload"
 class App extends Component {
 
 
   render() {
+    const { member = {} } = this.props
+    const { isUserLoggedIn } = member
     return (
       <Router>
         <Switch>
+          {isUserLoggedIn ? (
+            <Route path="/upload" component={UploadFile} />
+          ) : null
+          }
 
-          <Route path="/upload" component={UploadFile} />
-          <Route path="/" component={Home} />
+          {isUserLoggedIn ? (
+            <Route path="/" component={Home} />
+          ) : (<Route exact path="/" component={Resgister} />)
+          }
 
 
         </Switch>
@@ -25,5 +35,14 @@ class App extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  member: state.member || {},
+});
 
-export default App;
+const mapDispatchToProps = dispatch => {
+  return {
+
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
