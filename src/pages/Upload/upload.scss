@@ -5,7 +5,7 @@
   .ant-breadcrumb{
     margin-bottom: 10px;
     .ant-breadcrumb-link{
-      color: #838687 !important;
+      color: #fe8c00 !important;
     }
     .ant-breadcrumb-link a,.ant-breadcrumb-separator{
       color: #fff !important;
@@ -14,4 +14,8 @@
   .ant-upload-list{
     background-color: #fff;
   }
+}
+
+.ant-upload.ant-upload-drag p.ant-upload-drag-icon .anticon{
+  color: #169c8c !important;
 }

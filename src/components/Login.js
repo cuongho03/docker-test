@@ -80,14 +80,14 @@ function Login(props) {
 
 
         <Form.Item >
-          <Button loading={loading} type="primary" htmlType="submit" className="login-form-button">
+          <Button loading={loading} type="primary" htmlType="submit" className="login-form-button" shape="round" style={{ border: "none", backgroundColor: "#fe8c00", fontWeight: 500 }}>
             Login
           </Button>
           Or <a onClick={() => {
             if (props.onClickLink) {
               props.onClickLink()
             }
-          }} href="#">Register now!</a>
+          }} style={{ color: '#1ec1ad' }} href="#">Register now!</a>
         </Form.Item>
 
       </Form>

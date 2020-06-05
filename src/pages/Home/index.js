@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/iframe-has-title */
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/alt-text */
@@ -15,7 +16,7 @@ class Home extends Component {
       privacyShow: false,
       isPublic: true,
       visible: false,
-
+      toggle: true
     }
     this.title = props.match.params.folder
   }
@@ -85,18 +86,18 @@ class Home extends Component {
     }
     // show time
 
-    this.showTimer();
+
     var d = new Date();
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    var div = document.getElementById('overlay-computer'),
-      mouseclick = document.getElementById('first-row-win');
+    // var div = document.getElementById('overlay-computer'),
+    //   mouseclick = document.getElementById('first-row-win');
     // document.getElementById("day").innerHTML = days[d.getDay()];
     // document.getElementById("number-day").innerHTML = d.getUTCDate();
     // onClick
-    div.onscroll = function () {
-      resizer.style.bottom = (0 - div.scrollTop) + "px";
-      resizer.style.right = 0;
-    }
+    // div.onscroll = function () {
+    //   resizer.style.bottom = (0 - div.scrollTop) + "px";
+    //   resizer.style.right = 0;
+    // }
     const that = this
     window.$(".strat-win").click(function () {
       window.$('.start-window-fade').fadeToggle();
@@ -212,38 +213,38 @@ class Home extends Component {
     }
 
 
-    mouseclick.addEventListener('mousedown', function (e) {
-      isDown = true;
-      offset = [
-        div.offsetLeft - e.clientX,
-        div.offsetTop - e.clientY
-      ];
-    }, true);
+    // mouseclick.addEventListener('mousedown', function (e) {
+    //   isDown = true;
+    //   offset = [
+    //     div.offsetLeft - e.clientX,
+    //     div.offsetTop - e.clientY
+    //   ];
+    // }, true);
 
     document.addEventListener('mouseup', function () {
       isDown = false;
     }, true);
 
-    document.addEventListener('mousemove', function (event) {
-      event.preventDefault();
-      if (isDown) {
-        mousePosition = {
+    // document.addEventListener('mousemove', function (event) {
+    //   event.preventDefault();
+    //   if (isDown) {
+    //     mousePosition = {
 
-          x: event.clientX,
-          y: event.clientY
+    //       x: event.clientX,
+    //       y: event.clientY
 
-        };
-        div.style.left = (mousePosition.x + offset[0]) + 'px';
-        div.style.top = (mousePosition.y + offset[1]) + 'px';
-      }
-    }, true);
+    //     };
+    //     div.style.left = (mousePosition.x + offset[0]) + 'px';
+    //     div.style.top = (mousePosition.y + offset[1]) + 'px';
+    //   }
+    // }, true);
 
-    var resizer = document.getElementsByClassName('resizer')[0];
-    resizer.addEventListener('mousedown', this.initDrag, false);
-    div.onresize = function () {
-      resizer.style.bottom = 0;
-      resizer.style.right = 0;
-    }
+    // var resizer = document.getElementsByClassName('resizer')[0];
+    // resizer.addEventListener('mousedown', this.initDrag, false);
+    // div.onresize = function () {
+    //   resizer.style.bottom = 0;
+    //   resizer.style.right = 0;
+    // }
 
 
 
@@ -438,7 +439,7 @@ class Home extends Component {
 
 
   render() {
-    const { titleFolder, expanStaus, data, isPublic, privacyShow, visible } = this.state
+    const { titleFolder, expanStaus, data, isPublic, privacyShow, visible, toggle } = this.state
     const privateData = []
     const publicData = []
     const shareData = []
@@ -463,339 +464,82 @@ class Home extends Component {
     return (
       <div className="App">
         <div id="window" className="window">
-          {/* <div className="icon-computer text-center" id="icon-computer"
-            onDoubleClick={() => { this.opencom() }}
-          >
-            <img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500505053/thumb_14339670430This_PC_fo5lbo.png" className="img-responsive" />
-            <p>This PC</p>
-          </div> */}
+
           <section className="option-box">
             <div className="color-box">
-              <h4>All about Windows 10 Design</h4>
-              {/*<video class="center-block" width="360" height="" controls>
-                        <source src="img/myExplain_2.mp4" type="video/mp4">
-                        <source src="img/myExplain_2.ogg" type="video/ogg">
-                        Your browser does not support the video tag.
-                </video>*/}
-              <div style={{ position: 'relative', height: 0, paddingBottom: '56.25%', width: '400px' }}><iframe src="https://www.youtube.com/embed/VUPtvK28fhY?ecver=2" style={{ position: 'absolute', width: '100%', height: '100%', left: 0 }} width={640} height={360} frameBorder={0} allowFullScreen /></div>
+              <h4>All about GenC Platform</h4>
+
+              <div style={{ position: 'relative', height: 0, paddingBottom: '56.25%', width: '400px' }}>
+                <iframe src="https://www.youtube.com/embed/VUPtvK28fhY?ecver=2" style={{ position: 'absolute', width: '100%', height: '100%', left: 0 }} width={640} height={360} frameBorder={0} allowFullScreen />
+              </div>
               <a className="btn btn-primary center-block text-center" onClick={() => { this.openabout() }}>About Me</a>
             </div>
             <i className="fa fa-gear fa-3x gear-check" />
           </section>
-          <div className="overlay-computer" id="overlay-computer">
-            <div className="fluid-container">
-              <div className="first-row-win" id="first-row-win">
-                <div className="left">
-                  <i className="fa fa-hdd-o" />
-                  <i className="fa fa-file-o" />
-                  <i className="fa fa-folder" />
-                  <span>Front End</span>
-                </div>
-                <div className="right">
-                  <i className="fa fa-window-minimize" onClick={() => { this.closeopencom() }} />
-                  <i className="fa fa-window-restore" onClick={() => { this.returncom() }} id="returncam" style={{ display: 'none' }} />
-                  <i className="fa fa-window-maximize" onClick={() => { this.upercom() }} id="upercam" />
-                  <i className="fa fa-times" onClick={() => { this.closecom() }} />
-                </div>
-                <div className="clearfix" />
-              </div>
-              <div className="second-row-win">
-                <div>
-                  {/* Nav tabs */}
-                  <ul className="nav nav-tabs" role="tablist">
-                    <li role="presentation" className="active"><a className="home-a" href="#home" aria-controls="home" role="tab" data-toggle="tab">File</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Home</a></li>
-                    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Share</a></li>
-                    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">View</a></li>
-                  </ul>
-                  {/* Tab panes */}
-                  <div className="tab-content">
-                    <div role="tabpanel" className="tab-pane active" id="home">
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-envelope-open fa-2x" />
-                        <p>Mail</p>
-                      </div>
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-file-code-o  fa-2x" />
-                        <p>Code</p>
-                      </div>
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-sticky-note-o fa-2x" />
-                        <p>Note</p>
-                      </div>
-                      <div className="clearfix" />
-                    </div>
-                    <div role="tabpanel" className="tab-pane" id="profile">
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-user-circle fa-2x" />
-                        <p>User</p>
-                      </div>
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-battery-4  fa-2x" />
-                        <p>battery</p>
-                      </div>
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-book fa-2x" />
-                        <p>Book</p>
-                      </div>
-                      <div className="clearfix" />
-                    </div>
-                    <div role="tabpanel" className="tab-pane" id="messages">
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-car fa-2x" />
-                        <p>Car</p>
-                      </div>
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-camera-retro  fa-2x" />
-                        <p>cam</p>
-                      </div>
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-building fa-2x" />
-                        <p>build</p>
-                      </div>
-                      <div className="clearfix" />
-                    </div>
-                    <div role="tabpanel" className="tab-pane" id="settings">
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-cubes fa-2x" />
-                        <p>cubes</p>
-                      </div>
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-coffee fa-2x" />
-                        <p>coffee</p>
-                      </div>
-                      <div className="col-xs-1 text-center">
-                        <i className="fa fa-film fa-2x" />
-                        <p>film</p>
-                      </div>
-                      <div className="clearfix" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="third-row-win">
-                <div className="col-xs-2">
-                  <i className="fa fa-long-arrow-left" />
-                  <i className="fa fa-long-arrow-right" />
-                  <i className="fa fa-chevron-down" />
-                  <i className="fa fa-arrow-up" />
-                </div>
-                <div className="col-xs-7">
-                  <div className="path-input">
-                    <span className="path-icon-input">This pc</span>
-                    <span className="path-icon-input">Mohamed Yahya (E:)</span>
-                    <span className="path-icon-input">programming</span>
-                    <span className="path-icon-input">Front End</span>
-                  </div>
-                  <i className="fa fa-hdd-o path-icon" />
-                  <i className="fa fa-repeat path-icon-1" />
-                  <i className="path-icon-2">|</i>
-                </div>
-                <div className="col-xs-3">
-                  <input className="search-input" type="text" placeholder="Search" />
-                  <i className="fa fa-search path-icon-1" />
-                </div>
-                <div className="clearfix" />
-              </div>
-              <div className="fourd-row-win">
-                <div className="col-xs-3" style={{ borderRight: '1px solid #808080' }}>
-                  <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <div className="panel panel-default">
-                      <div className="panel-heading" role="tab" id="headingOne">
-                        <h4 className="panel-title">
-                          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            <span className="fa fa-star">Quick access</span>
-                          </a>
-                        </h4>
-                      </div>
-                      <div id="collapseOne" className="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                        <div className="panel-body">
-                          <p><span className="fa fa-desktop">Desktop</span></p>
-                          <p><span className="fa fa-download">Downloads</span></p>
-                          <p><span className="fa fa-file-text">documents</span></p>
-                          <p><span className="fa fa-picture-o ">Picture</span></p>
-                          <p><span className="fa fa-folder ">Folder</span></p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="panel panel-default">
-                      <div className="panel-heading" role="tab" id="headingTwo">
-                        <h4 className="panel-title">
-                          <a className="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            <span className="fa fa-folder-open">Creative Cloud</span>
-                          </a>
-                        </h4>
-                      </div>
-                      <div id="collapseTwo" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                        <div className="panel-body">
-                          <p><span className="fa fa-desktop">Desktop</span></p>
-                          <p><span className="fa fa-download">Downloads</span></p>
-                          <p><span className="fa fa-file-text">documents</span></p>
-                          <p><span className="fa fa-picture-o ">Picture</span></p>
-                          <p><span className="fa fa-folder ">Folder</span></p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="panel panel-default">
-                      <div className="panel-heading" role="tab" id="headingThree">
-                        <h4 className="panel-title">
-                          <a className="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            <span className="fa fa-desktop">This PC</span>
-                          </a>
-                        </h4>
-                      </div>
-                      <div id="collapseThree" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                        <div className="panel-body">
-                          <p><span className="fa fa-desktop">Desktop</span></p>
-                          <p><span className="fa fa-download">Downloads</span></p>
-                          <p><span className="fa fa-file-text">documents</span></p>
-                          <p><span className="fa fa-picture-o ">Picture</span></p>
-                          <p><span className="fa fa-folder ">Folder</span></p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-xs-9 ">
-                  <div className="row main-folders">
-                    <div className="col-xs-2 folders text-center" onDoubleClick={() => { this.openimg() }}>
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500503391/admin-3_yilprt.jpg" className="img-responsive  center-block" alt="" /></p>
-                      <span>Photo</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center" onDoubleClick={() => { this.openvid() }}>
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500505068/myposter_vlaggb.png" className="img-responsive  center-block" alt="" /></p>
-                      <span>Video</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center" onDoubleClick={() => { this.opennote() }}>
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500505134/if_sticky-note_299111_px7waa.png" className="img-responsive  center-block" alt="" /></p>
-                      <span>Note</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="col-xs-2 folders text-center">
-                      <p className="contain"><img src="http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500502735/if_folder-blue_285658_f5jeko.svg" className="img-responsive  center-block" style={{ height: '64px' }} alt="" /></p>
-                      <span>Folder</span>
-                    </div>
-                    <div className="clearfix" />
-                  </div>
-                </div>
-              </div>
-              <div className="fived-row-win" />
-            </div>
-            <div className="resizer" />
-          </div>
+
           <div className="clearfix" />
           {/* tmp */}
+          <footer className="nav navbar-inverse navbar-fixed-top footer text-center">
+            <div className="fluid-container">
+              <div className="row">
+                <div className="left">
+                  <div className="col-xs-1-me">
+                    <div className="icon-bottom strat-win" id="strat-win">
+                      <img src="/logo192.png" height="20px" width="20px" alt="logo"></img>
+                      {/* <i className="fa fa-windows fa-2x" /> */}
+                    </div>
+                  </div>
+                  <div className="col-xs-1-me">
+                    <div className="icon-bottom">
+                      <i className="fa fa-search fa-2x" />
+                    </div>
+                  </div>
+                  <div className="col-xs-1-me">
+                    <div className="icon-bottom">
+                      <i className="fa fa-envelope fa-2x" />
+                    </div>
+                  </div>
+                  <div className="col-xs-1-me" id="a1">
+                    <div className="icon-bottom">
+                      <i className="fa fa-folder fa-2x" />
+                    </div>
+                  </div>
+                  <div className="col-xs-1-me" id="a2">
+                    <div className="icon-bottom">
+                      <i className="fa fa-picture-o fa-2x" />
+                    </div>
+                  </div>
+                  <div className="col-xs-1-me" id="a3">
+                    <div className="icon-bottom">
+                      <i className="fa fa-film fa-2x" />
+                    </div>
+                  </div>
+                  <div className="col-xs-1-me" id="a4">
+                    <div className="icon-bottom">
+                      <i className="fa fa-file-text-o fa-2x" />
+                    </div>
+                  </div>
+                  <div className="col-xs-1-me" id="a5">
+                    <div className="icon-bottom">
+                      <i className="fa fa-id-card fa-2x" />
+                    </div>
+                  </div>
+                  <span className=".clearfix" />
+                </div>
+                <div className="right">
+                  <div className="col-xs-1-me" id="close-all">
+                  </div>
+                  <div className="col-xs-1-me">
+                    <div className="icon-bottom">
+                      <i className="fa fa-bell fa-2x" />
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </footer>
+
           <div className="start-window-fade hidden-start" id="start-window-fade" />
           <div className="start-window hidden-start" id="start-window">
             <div className="fluid-container" id="container-start">
@@ -805,9 +549,7 @@ class Home extends Component {
 
                   </div>
 
-                  {/* <div className="icon-bottom">
-                    <i class="fa fa-share-square-o" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Share files"></i>
-                  </div> */}
+
 
                   <div onClick={() => {
                     if (!privacyShow) {
@@ -823,7 +565,7 @@ class Home extends Component {
                     }
                   }}
                     className="icon-bottom " >
-                    <i class="fa fa-user-secret" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Private files"></i>
+                    <i class="fa fa-file-text" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Private files"></i>
                   </div>
 
                   <div onClick={() => {
@@ -836,49 +578,58 @@ class Home extends Component {
                   </div>
 
                   <div className="icon-bottom">
-                    {/* <i className="fa fa-user fa-1x" /> */}
+
                     <i class="fa fa-cloud-upload" data-toggle="tooltip" data-placement="top" title="Upload file" onClick={() => { this.props.history.push("/upload") }} aria-hidden="true"></i>
                   </div>
 
                 </div>
                 <div className="col-xs-3 second-column">
                   <div className="wrap-scroll">
-                    <div className="head-med mouse-prient">
-                      <small>{titleFolder} <i className={`${expanStaus ? "fa fa-chevron-up fa-1x" : "fa fa-chevron-down fa-1x"}`} /></small>
+                    <div onClick={() => {
+                      this.setState({
+                        toggle: !toggle
+                      })
+                    }} className="head-med mouse-prient">
+                      <small>{titleFolder} <i className={`${toggle ? "fa fa-chevron-up fa-1x" : "fa fa-chevron-down fa-1x"}`} /></small>
                     </div>
-                    {/* <div className="head-med">
-                      <small>Tools used</small>
-                    </div> */}
                     {
-                      isPublic ? (
-                        publicData.map(item => (
-                          <div className="media">
-                            <div className="media-left">
-                              <a href="#">
-                                <img className="media-object" src={item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? item.link : "https://i.ibb.co/d5pWRyG/file-img.png"} width={35} height={35} alt="..." />
-                              </a>
-                            </div>
-                            <div className="media-body">
-                              <small className="media-heading">{item.name}</small>
-                            </div>
-                          </div>
+                      toggle ? (
+                        <>
+                          {
+                            isPublic ? (
+                              publicData.map(item => (
+                                <div className="media">
+                                  <div className="media-left">
+                                    <a href="#">
+                                      <img className="media-object" src={item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? item.link : "https://i.ibb.co/d5pWRyG/file-img.png"} width={35} height={35} alt="..." />
+                                    </a>
+                                  </div>
+                                  <div className="media-body">
+                                    <small className="media-heading">{item.name}</small>
+                                  </div>
+                                </div>
 
-                        ))
-                      ) : (
-                          privateData.map(item => (
-                            <div className="media">
-                              <div className="media-left">
-                                <a href="#">
-                                  <img className="media-object" src={item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? item.link : "https://i.ibb.co/d5pWRyG/file-img.png"} width={35} height={35} alt="..." />
-                                </a>
-                              </div>
-                              <div className="media-body">
-                                <small className="media-heading">{item.name}</small>
-                              </div>
-                            </div>
+                              ))
+                            ) : (
+                                privateData.map(item => (
+                                  <div className="media">
+                                    <div className="media-left">
+                                      <a href="#">
+                                        <img className="media-object" src={item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? item.link : "https://i.ibb.co/d5pWRyG/file-img.png"} width={35} height={35} alt="..." />
+                                      </a>
+                                    </div>
+                                    <div className="media-body">
+                                      <small className="media-heading">{item.name}</small>
+                                    </div>
+                                  </div>
 
-                          )))
+                                )))
+                          }
+                        </>
+                      ) : null
                     }
+
+
 
                   </div>
                 </div>
@@ -887,7 +638,7 @@ class Home extends Component {
                     <small>Share files</small>
                   </div>
                 </div>
-                <div className={`${shareData.length % 2 > 10 ? "col-xs-4" : "col-xs-8"} second-column`}>
+                <div className={`${shareData.length % 2 > 10 ? "col-xs-4" : "col-xs-8"} third-column`}>
 
                   <div className="row">
                     {
@@ -976,195 +727,12 @@ class Home extends Component {
 
                   </div>
                 </div>
-                {/* <div className="col-xs-4">
 
-
-                  <div className="row">
-                    <div className="col-xs-4 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500504485/logo_jgngah.png")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div style={{ fontSize: '10px' }}>
-                          Xbox
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 box">
-                      <div className="box-style">
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-music fa-2x" />
-                        </div>
-                        <div style={{ fontSize: '10px' }}>
-                          Music
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 box">
-                      <div className="box-style">
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-film fa-2x" />
-                        </div>
-                        <div style={{ fontSize: '10px' }}>
-                          Film
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500504540/microsoft-solitaire-collection-02-535x535_bactpx.png")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div style={{ fontSize: '10px' }}>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500504576/1200x630bb_juslti.jpg")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div style={{ fontSize: '10px' }}>
-                          minecraft
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500504589/shortcut-icon-180-393c2144_lifwjy.png")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div style={{ fontSize: '10px' }}>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-8 col-xs-push-4 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500503395/bank_cf8dgr.jpg")', backgroundSize: '130%', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div>
-                          News
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 col-xs-pull-8 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500504662/maxresdefault_live_bwb3qd.jpg")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div>
-                          Money
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500504684/unnamed_is6kxn.png")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div style={{ fontSize: '10px' }}>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500503787/onenote-amazon-app-store-100361701-large_m6lbsu.jpg")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div style={{ fontSize: '12px' }}>
-                          OneNote
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xs-4 box">
-                      <div className="box-style" style={{ background: 'url("http://res.cloudinary.com/dr5ei3rt1/image/upload/v1500504701/office2016logo_uw8zcd.png")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        <div className="icon-bottom text-center" style={{ margin: '20px' }}>
-                          <i className="fa fa-twitter fa-2x" style={{ color: 'rgba(0,0,0,0)' }} />
-                        </div>
-                        <div style={{ fontSize: '10px' }}>
-                          Office
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
 
               </div>
             </div>
           </div>
-          <footer className="nav navbar-inverse navbar-fixed-bottom footer text-center">
-            <div className="fluid-container">
-              <div className="row">
-                <div className="left">
-                  <div className="col-xs-1-me">
-                    <div className="icon-bottom strat-win" id="strat-win">
-                      <i className="fa fa-windows fa-2x" />
-                    </div>
-                  </div>
-                  <div className="col-xs-1-me">
-                    <div className="icon-bottom">
-                      <i className="fa fa-search fa-2x" />
-                    </div>
-                  </div>
-                  <div className="col-xs-1-me">
-                    <div className="icon-bottom">
-                      <i className="fa fa-envelope fa-2x" />
-                    </div>
-                  </div>
-                  <div className="col-xs-1-me" id="a1">
-                    <div className="icon-bottom">
-                      <i className="fa fa-folder fa-2x" />
-                    </div>
-                  </div>
-                  <div className="col-xs-1-me" id="a2">
-                    <div className="icon-bottom">
-                      <i className="fa fa-picture-o fa-2x" />
-                    </div>
-                  </div>
-                  <div className="col-xs-1-me" id="a3">
-                    <div className="icon-bottom">
-                      <i className="fa fa-film fa-2x" />
-                    </div>
-                  </div>
-                  <div className="col-xs-1-me" id="a4">
-                    <div className="icon-bottom">
-                      <i className="fa fa-file-text-o fa-2x" />
-                    </div>
-                  </div>
-                  <div className="col-xs-1-me" id="a5">
-                    <div className="icon-bottom">
-                      <i className="fa fa-id-card fa-2x" />
-                    </div>
-                  </div>
-                  <span className=".clearfix" />
-                </div>
-                <div className="right">
-                  <div className="col-xs-1-me" id="close-all">
-                  </div>
-                  <div className="col-xs-1-me">
-                    <div className="icon-bottom">
-                      <i className="fa fa-bell fa-2x" />
-                    </div>
-                  </div>
-                  <div className="date col-xs-1-me">
-                    <span id="time">00:00</span>
-                    <span id="history">00/00/0000</span>
-                  </div>
-                  <div className="col-xs-1-me">
-                    <div className="icon-bottom">
-                      <i className="fa fa-volume-up  fa-2x" />
-                    </div>
-                  </div>
-                  <div className="col-xs-1-me">
-                    <div className="icon-bottom">
-                      <i className="fa fa-chevron-up fa-2x" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </footer>
+
           <Modal
             title=" Private files require your password"
             visible={this.state.visible}
@@ -1186,7 +754,7 @@ class Home extends Component {
               </Form.Item>
               <Form.Item style={{ width: "100%", margin: "auto", textAlign: "right" }}>
 
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" className="login-form-button" shape="round" style={{ border: "none", backgroundColor: "#fe8c00", fontWeight: 500 }}>
                   Submit
                  </Button>
 

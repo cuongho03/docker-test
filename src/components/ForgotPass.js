@@ -43,7 +43,7 @@ function ForgotPass(props) {
 
       </Form.Item>
       <Form.Item >
-        <Button size="large" loading={loading} type="primary" htmlType="submit">
+        <Button size="large" loading={loading} type="primary" htmlType="submit" shape="round" style={{ border: "none", backgroundColor: "#fe8c00", fontWeight: 500 }}>
           Submit
           </Button>
       </Form.Item>

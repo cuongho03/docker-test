@@ -10,7 +10,9 @@ import Home from "./pages/Home"
 import Resgister from "./pages/Resgister"
 import UploadFile from "./pages/Upload"
 class App extends Component {
-
+  componentDidMount() {
+    // window.localStorage.removeItem('isUserLoggedIn')
+  }
 
   render() {
     const { member = {} } = this.props
