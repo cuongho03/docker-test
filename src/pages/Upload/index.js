@@ -5,6 +5,10 @@ import React, { Component } from "react"
 import { Upload, message, PageHeader, Breadcrumb } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom'
+import uploadService from './../../services/uploadFile'
+import { apiUploadUrl } from '../../constants'
+import { FirebaseRef } from '../../lib/firebase'
+import moment from 'moment'
 import './upload.scss';
 const { Dragger } = Upload;
 
@@ -28,7 +32,32 @@ class UploadFile extends Component {
       onChange(info) {
         const { status } = info.file;
         if (status !== 'uploading') {
-          console.log(info.file, info.fileList);
+          uploadService.uploadFile(info.file.originFileObj).then(result => {
+            if (result) {
+              // const ID = Math.random().toString(36).substr(2, 5);
+              const arg = info.file.originFileObj
+              const hostName = window.location.hostname
+              const arrayHost = hostName.split(".")
+              const { ID } = result
+              const dataFile = {
+                "name": arg.name,
+                "modified": moment().format('MMMM D, YYYY h:mm:ss A'),
+                "size": arg.size,
+                "link": apiUploadUrl + '/' + ID,
+                "type": arg.type,
+                "fullName": arg.name,
+                "created": moment().format('MMMM D, YYYY h:mm:ss A'),
+                "status": "private"
+              }
+
+              const ref = FirebaseRef.child(`${arrayHost[0]}/files/${ID}`)
+              return ref.set({
+                ...dataFile
+              }).catch((err) => {
+                message.error(err.message)
+              })
+            }
+          })
         }
         if (status === 'done') {
           message.success(`${info.file.name} file uploaded successfully.`);

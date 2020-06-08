@@ -30,7 +30,7 @@ class App extends Component {
           ) : (<Route exact path="/" component={Resgister} />)
           }
 
-
+          <Route component={Resgister} />
         </Switch>
       </Router>
 

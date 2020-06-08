@@ -1,11 +1,19 @@
+/* eslint-disable no-mixed-operators */
 /* eslint-disable jsx-a11y/iframe-has-title */
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from 'react';
-import filesService from './../../services/files'
-import { Modal, Form, Input, Button } from 'antd';
-
+import { Modal, Form, Input, Button, message, Select, Popconfirm } from 'antd';
+import { FirebaseRef } from '../../lib/firebase'
+import Box from '../../components/Drag/box';
+import Dustbin from '../../components/Drag/dustbin'
+import Lightbox from 'react-image-lightbox';
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import './home.scss'
+import 'react-image-lightbox/style.css';
+const { Option } = Select;
 class Home extends Component {
   constructor(props) {
     super(props)
@@ -16,7 +24,15 @@ class Home extends Component {
       privacyShow: false,
       isPublic: true,
       visible: false,
-      toggle: true
+      toggle: true,
+      isOpenPrivate: false,
+      photoIndexPrivate: 0,
+      isOpenPublic: false,
+      photoIndexPublic: 0,
+      itemEdit: {},
+      showEdit: false,
+      accessLog: false,
+      emailLink: false,
     }
     this.title = props.match.params.folder
   }
@@ -44,9 +60,26 @@ class Home extends Component {
     });
   };
   fetchData() {
-    filesService.fetchFiles().then(result => {
-      this.setState({ data: result })
+    const hostName = window.location.hostname
+    const arrayHost = hostName.split(".")
+    let ref = FirebaseRef.child(`${arrayHost[0]}/files`)
+    ref.on('value', snapshot => {
+      const data = snapshot.val()
+      if (data && typeof (data) === 'object') {
+        let newData = []
+        Object.keys(data).forEach(key => {
+          newData.push({
+            ...data[key],
+            id: key,
+            type2: data[key].type
+          })
+        })
+        const newArray = newData.reverse()
+
+        this.setState({ data: newArray })
+      }
     })
+
   }
 
   componentDidMount() {
@@ -437,9 +470,74 @@ class Home extends Component {
     element.style.display = 'block';
   }
 
+  handleDrag(data) {
+    const hostName = window.location.hostname
+    const arrayHost = hostName.split(".")
+    data.status = 'share'
+    data.type = data.type2
+    const ref = FirebaseRef.child(`${arrayHost[0]}/files/${data.id}`).set({
+      ...data
+    }).catch((err) => {
+      message.error(err.message)
+    })
+  }
+
+  onConfirm(data) {
+    const hostName = window.location.hostname
+    const arrayHost = hostName.split(".")
+    const ref = FirebaseRef.child(`${arrayHost[0]}/files/${data.id}`)
+
+    ref.remove().then(() => {
+
+      message.success(`${data.name} is been removed successfully!`)
+    }).catch(err => {
+      message.error(err.message)
+    })
+  }
+
+  onEdit(data) {
+    this.setState({
+      showEdit: true,
+      itemEdit: data
+    })
+  }
+
+  handleEditFile(itemEdit) {
+    const hostName = window.location.hostname
+    const arrayHost = hostName.split(".")
+
+    const ref = FirebaseRef.child(`${arrayHost[0]}/files/${itemEdit.id}`).set({
+      ...itemEdit,
+
+    }).then(() => {
+      this.setState({
+        showEdit: false
+      })
+      message.success(`${itemEdit.name} is been updated successfully`)
+    }).catch((err) => {
+      message.error(err.message)
+    })
+
+  }
+
+  onShare(item) {
+    this.handleEmailLink(true)
+  }
+
+  handleAccessLog(value) {
+    this.setState({
+      accessLog: value
+    })
+  }
+
+  handleEmailLink(value) {
+    this.setState({
+      emailLink: value
+    })
+  }
 
   render() {
-    const { titleFolder, expanStaus, data, isPublic, privacyShow, visible, toggle } = this.state
+    const { titleFolder, data, isPublic, privacyShow, photoIndexPublic, photoIndexPrivate, isOpenPrivate, isOpenPublic, toggle, showEdit, itemEdit, accessLog, emailLink } = this.state
     const privateData = []
     const publicData = []
     const shareData = []
@@ -516,7 +614,7 @@ class Home extends Component {
                   </div>
                   <div className="col-xs-1-me" id="a4">
                     <div className="icon-bottom">
-                      <i className="fa fa-file-text-o fa-2x" />
+                      <i className="fa fa-lock fa-2x" />
                     </div>
                   </div>
                   <div className="col-xs-1-me" id="a5">
@@ -541,198 +639,274 @@ class Home extends Component {
           </footer>
 
           <div className="start-window-fade hidden-start" id="start-window-fade" />
-          <div className="start-window hidden-start" id="start-window">
-            <div className="fluid-container" id="container-start">
-              <div className="row">
-                <div className="col-xs-1 first-column">
-                  <div className="icon-bottom" id="power" >
+          <DndProvider backend={HTML5Backend} >
+            <div className="start-window hidden-start" id="start-window">
+              <div className="fluid-container" id="container-start">
+                <div className="row">
+                  <div className="col-xs-1 first-column">
+                    <div className="icon-bottom" id="power" >
 
-                  </div>
+                    </div>
 
 
 
-                  <div onClick={() => {
-                    if (!privacyShow) {
-                      this.setState({
-                        privacyShow: true,
-                        visible: true
-                      })
-                    } else {
-                      this.setState({
-                        isPublic: false,
-                        titleFolder: "Private files"
-                      })
-                    }
-                  }}
-                    className="icon-bottom " >
-                    <i class="fa fa-file-text" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Private files"></i>
-                  </div>
+                    <div onClick={() => {
+                      if (!privacyShow) {
+                        this.setState({
+                          privacyShow: true,
+                          visible: true
+                        })
+                      } else {
+                        this.setState({
+                          isPublic: false,
+                          titleFolder: "Private files"
+                        })
+                      }
+                    }}
+                      className="icon-bottom " >
+                      <i class="fa fa-lock fa-4" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Private files"></i>
+                    </div>
 
-                  <div onClick={() => {
-                    this.setState({
-                      isPublic: true,
-                      titleFolder: "Public files"
-                    })
-                  }} className="icon-bottom">
-                    <i class="fa fa-file-o" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Public files"></i>
-                  </div>
-
-                  <div className="icon-bottom">
-
-                    <i class="fa fa-cloud-upload" data-toggle="tooltip" data-placement="top" title="Upload file" onClick={() => { this.props.history.push("/upload") }} aria-hidden="true"></i>
-                  </div>
-
-                </div>
-                <div className="col-xs-3 second-column">
-                  <div className="wrap-scroll">
                     <div onClick={() => {
                       this.setState({
-                        toggle: !toggle
+                        isPublic: true,
+                        titleFolder: "Public files"
                       })
-                    }} className="head-med mouse-prient">
-                      <small>{titleFolder} <i className={`${toggle ? "fa fa-chevron-up fa-1x" : "fa fa-chevron-down fa-1x"}`} /></small>
+                    }} className="icon-bottom">
+                      <i class="fa fa-file-o" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Public files"></i>
                     </div>
-                    {
-                      toggle ? (
-                        <>
-                          {
-                            isPublic ? (
-                              publicData.map(item => (
-                                <div className="media">
-                                  <div className="media-left">
-                                    <a href="#">
-                                      <img className="media-object" src={item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? item.link : "https://i.ibb.co/d5pWRyG/file-img.png"} width={35} height={35} alt="..." />
-                                    </a>
-                                  </div>
-                                  <div className="media-body">
-                                    <small className="media-heading">{item.name}</small>
-                                  </div>
-                                </div>
 
-                              ))
-                            ) : (
-                                privateData.map(item => (
-                                  <div className="media">
-                                    <div className="media-left">
-                                      <a href="#">
-                                        <img className="media-object" src={item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? item.link : "https://i.ibb.co/d5pWRyG/file-img.png"} width={35} height={35} alt="..." />
-                                      </a>
-                                    </div>
-                                    <div className="media-body">
-                                      <small className="media-heading">{item.name}</small>
-                                    </div>
-                                  </div>
+                    <div className="icon-bottom">
 
-                                )))
-                          }
-                        </>
-                      ) : null
-                    }
-
-
+                      <i class="fa fa-cloud-upload" data-toggle="tooltip" data-placement="top" title="Upload file" onClick={() => { this.props.history.push("/upload") }} aria-hidden="true"></i>
+                    </div>
 
                   </div>
-                </div>
-                <div className="col-xs-8 ">
-                  <div className="head-box">
-                    <small>Share files</small>
+                  <div className="col-xs-3 second-column">
+                    <div className="wrap-scroll">
+                      <div onClick={() => {
+                        this.setState({
+                          toggle: !toggle
+                        })
+                      }} className="head-med mouse-prient">
+                        <small>{titleFolder} <i className={`${toggle ? "fa fa-chevron-up fa-1x" : "fa fa-chevron-down fa-1x"}`} /></small>
+                      </div>
+                      {
+                        toggle ? (
+                          <>
+                            {
+                              isPublic ? (
+                                publicData.map((item, index) => (
+                                  <Box onEdit={(data) => this.onEdit(data)} onConfirm={(data) => this.onConfirm(data)} onClick={() => this.setState({ isOpenPublic: true, photoIndexPublic: index })} item={item} />
+
+                                ))
+                              ) : (
+                                  privateData.map((item, index) => (
+                                    <Box onEdit={(data) => this.onEdit(data)} onConfirm={(data) => this.onConfirm(data)} onClick={() => this.setState({ isOpenPrivate: true, photoIndexPrivate: index })} item={item} />
+
+
+                                  )))
+                            }
+                          </>
+                        ) : null
+                      }
+
+
+
+                    </div>
                   </div>
-                </div>
-                <div className={`${shareData.length % 2 > 10 ? "col-xs-4" : "col-xs-8"} third-column`}>
+                  <div className="col-xs-8 ">
+                    <div className="head-box">
+                      <small>Share files</small>
+                    </div>
+                  </div>
+                  <Dustbin onChange={(data) => {
 
-                  <div className="row">
-                    {
-                      shareData.map((item, index) => {
+                    this.handleDrag(data)
+                  }}>
+                    <div className={`${shareData.length % 2 > 10 ? "col-xs-4" : "col-xs-8"} third-column`}>
 
-                        console.log(lengthData, check)
-                        if (index < lengthData) {
-                          console.log(item.type)
-                          if (index === 0) {
+                      <div className="row">
+                        {
+                          shareData.map((item, index) => {
 
-                            return (
-                              <div className="col-xs-4 box">
-                                <div className="box-style">
-                                  <div className="icon-bottom text-center" >
-                                    {item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? (
-                                      <img className="media-object" src={item.link} width={175} height={65} alt="..." />
-                                    ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
+                            if (index < lengthData) {
+
+                              if (index === 0) {
+
+                                return (
+                                  <div className="col-xs-4 box">
+                                    <div className="box-style">
+                                      <div className="icon-bottom text-center" >
+                                        {item.type === 'image/png' || item.type === 'image/jpeg' || item.type === 'image/jpg' ? (
+                                          <img className="media-object" src={item.link} width={175} height={65} alt="" />
+                                        ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
 
 
+                                      </div>
+                                      <div className="drag__box">
+                                        <small className="media-heading drag__box__name">{item.name}</small>
+                                        <div className="drag__box__action">
+                                          <div data-toggle="tooltip" data-placement="top" title={"Share"} onClick={() => {
+                                            this.onShare(item)
+                                          }}>
+                                            <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                                          </div>
+                                          <div data-toggle="tooltip" data-placement="top" title={"Edit"} onClick={() => {
+                                            this.onEdit(item)
+                                          }}><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
+                                          <Popconfirm
+                                            title="Are you sure delete this item?"
+                                            onConfirm={() => { this.onConfirm(item) }}
+                                            okText="Yes"
+                                            cancelText="No"
+                                          >
+                                            <div data-toggle="tooltip" data-placement="top" title={"Remove"} >
+                                              <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </div>
+                                          </Popconfirm>
+
+                                        </div>
+                                      </div>
+
+                                    </div>
                                   </div>
-                                  <div>
-                                    {item.name}
-                                  </div>
-                                </div>
-                              </div>
-                            )
+                                )
 
-                          } else if (index === 1) {
-                            return (
-                              <div className="col-xs-8 box">
-                                <div className="box-style text-center">
-                                  <div className="icon-bottom text-center" >
-                                    {item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? (
-                                      <img className="media-object" src={item.link} width={390} height={65} alt="..." />
-                                    ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
+                              } else if (index === 1) {
+                                return (
+                                  <div className="col-xs-8 box">
+                                    <div className="box-style text-center">
+                                      <div className="icon-bottom text-center" >
+                                        {item.type === 'image/png' || item.type === 'image/jpeg' || item.type === 'image/jpg' ? (
+                                          <img className="media-object" src={item.link} width={390} height={65} alt="" />
+                                        ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
 
-                                  </div>
-                                  <div>
-                                    {item.name}
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          }
-                          else if (index === 2) {
-                            return (
-                              <div className="col-xs-8 box">
-                                <div className="box-style">
-                                  <div className="icon-bottom text-center" >
-                                    {item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? (
-                                      <img className="media-object" src={item.link} width={390} height={65} alt="..." />
-                                    ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
-                                  </div>
-                                  <div>
-                                    {item.name}
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          } else {
-                            return (
-                              <div className="col-xs-4 box">
-                                <div className="box-style">
-                                  <div className="icon-bottom text-center" >
-                                    {item.type === 'png' || item.type === 'jepg' || item.type === 'jpg' ? (
-                                      <img className="media-object" src={item.link} width={175} height={65} alt="..." />
-                                    ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
+                                      </div>
+                                      <div className="drag__box">
+                                        <small className="media-heading drag__box__name">{item.name}</small>
+                                        <div className="drag__box__action">
+                                          <div data-toggle="tooltip" data-placement="top" title={"Share"} onClick={() => {
+                                            this.onShare(item)
+                                          }}>
+                                            <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                                          </div>
+                                          <div data-toggle="tooltip" data-placement="top" title={"Edit"} onClick={() => {
+                                            this.onEdit(item)
+                                          }}><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
+                                          <Popconfirm
+                                            title="Are you sure delete this item?"
+                                            onConfirm={() => { this.onConfirm(item) }}
+                                            okText="Yes"
+                                            cancelText="No"
+                                          >
+                                            <div data-toggle="tooltip" data-placement="top" title={"Remove"} >
+                                              <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </div>
+                                          </Popconfirm>
 
-                                  </div>
-                                  <div>
-                                    {item.name}
-                                  </div>
-                                </div>
-                              </div>
+                                        </div>
+                                      </div>
 
-                            )
-                          }
+                                    </div>
+                                  </div>
+                                )
+                              }
+                              else if (index === 2) {
+                                return (
+                                  <div className="col-xs-8 box">
+                                    <div className="box-style">
+                                      <div className="icon-bottom text-center" >
+                                        {item.type === 'image/png' || item.type === 'image/jpeg' || item.type === 'image/jpg' ? (
+                                          <img className="media-object" src={item.link} width={390} height={65} alt="" />
+                                        ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
+                                      </div>
+                                      <div className="drag__box">
+                                        <small className="media-heading drag__box__name">{item.name}</small>
+                                        <div className="drag__box__action">
+                                          <div data-toggle="tooltip" data-placement="top" title={"Share"} onClick={() => {
+                                            this.onShare(item)
+                                          }}>
+                                            <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                                          </div>
+                                          <div data-toggle="tooltip" data-placement="top" title={"Edit"} onClick={() => {
+                                            this.onEdit(item)
+                                          }}><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
+                                          <Popconfirm
+                                            title="Are you sure delete this item?"
+                                            onConfirm={() => { this.onConfirm(item) }}
+                                            okText="Yes"
+                                            cancelText="No"
+                                          >
+                                            <div data-toggle="tooltip" data-placement="top" title={"Remove"} >
+                                              <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </div>
+                                          </Popconfirm>
+
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                )
+                              } else {
+                                return (
+                                  <div className="col-xs-4 box">
+                                    <div className="box-style">
+                                      <div className="icon-bottom text-center" >
+                                        {item.type === 'image/png' || item.type === 'image/jpeg' || item.type === 'image/jpg' ? (
+                                          <img className="media-object" src={item.link} width={175} height={65} alt="" />
+                                        ) : (<i style={{ marginTop: "20px" }} className="fa fa-file-o fa-2x" />)}
+
+                                      </div>
+                                      <div className="drag__box">
+                                        <small className="media-heading drag__box__name">{item.name}</small>
+                                        <div className="drag__box__action">
+                                          <div data-toggle="tooltip" data-placement="top" title={"Share"} onClick={() => {
+                                            this.onShare(item)
+                                          }}>
+                                            <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                                          </div>
+                                          <div data-toggle="tooltip" data-placement="top" title={"Edit"} onClick={() => {
+                                            this.onEdit(item)
+                                          }}><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
+                                          <Popconfirm
+                                            title="Are you sure delete this item?"
+                                            onConfirm={() => { this.onConfirm(item) }}
+                                            okText="Yes"
+                                            cancelText="No"
+                                          >
+                                            <div data-toggle="tooltip" data-placement="top" title={"Remove"} >
+                                              <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </div>
+                                          </Popconfirm>
+
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                  </div>
+
+                                )
+                              }
+                            }
+
+                          })
                         }
 
-                      })
-                    }
 
 
 
 
+                      </div>
 
-                  </div>
+                    </div>
+                  </Dustbin>
+
                 </div>
-
-
               </div>
             </div>
-          </div>
-
+          </DndProvider>
           <Modal
             title=" Private files require your password"
             visible={this.state.visible}
@@ -764,7 +938,144 @@ class Home extends Component {
 
           </Modal>
         </div>
+        {
+          isOpenPublic && (
+            <Lightbox
+              // toolbarButtons={[<a download href={publicData[photoIndexPublic] && publicData[photoIndexPublic].link ? publicData[photoIndexPublic].link : ""}><Button onClick={() => this.setState({ photoIndexPublic: false })}>Download</Button></a>]}
+              // discourageDownloads={true}
+              mainSrc={publicData[photoIndexPublic] && publicData[photoIndexPublic].link && (publicData[photoIndexPublic].type === 'image/png' || publicData[photoIndexPublic].type === 'image/jpeg' || publicData[photoIndexPublic].type === 'image/jpg') ? publicData[photoIndexPublic].link : "https://i.ibb.co/d5pWRyG/file-img.png"}
+              // nextSrc={publicData[(photoIndexPublic + 1) % publicData.length].link}
+              // prevSrc={publicData[(photoIndexPublic + publicData.length - 1) % publicData.length].link}
+              onCloseRequest={() => this.setState({ isOpenPublic: false })}
+            // onMovePrevRequest={() =>
+            //   this.setState({
+            //     photoIndex: (photoIndexPublic + publicData.length - 1) % publicData.length,
+            //   })
+            // }
+            // onMoveNextRequest={() =>
+            //   this.setState({
+            //     photoIndex: (photoIndexPublic + 1) % publicData.length,
+            //   })
+            // }
+            />
+          )
+        }
 
+        {
+          isOpenPrivate && (
+            <Lightbox
+              // toolbarButtons={[<a download href={privateData[photoIndexPrivate] && privateData[photoIndexPrivate].link ? privateData[photoIndexPrivate].link : ""}><Button onClick={() => this.setState({ photoIndexPrivate: false })}>Download</Button></a>]}
+              // discourageDownloads={true}
+              mainSrc={privateData[photoIndexPrivate] && privateData[photoIndexPrivate].link && (privateData[photoIndexPrivate].type === 'image/png' || privateData[photoIndexPrivate].type === 'image/jpeg' || privateData[photoIndexPrivate].type === 'image/jpg') ? privateData[photoIndexPrivate].link : "https://i.ibb.co/d5pWRyG/file-img.png"}
+              // nextSrc={privateData[(photoIndexPrivate + 1) % privateData.length].link}
+              // prevSrc={privateData[(photoIndexPrivate + privateData.length - 1) % privateData.length].link}
+              onCloseRequest={() => this.setState({ isOpenPrivate: false })}
+            // onMovePrevRequest={() =>
+            //   this.setState({
+            //     photoIndex: (photoIndexPrivate + privateData.length - 1) % privateData.length,
+            //   })
+            // }
+            // onMoveNextRequest={() =>
+            //   this.setState({
+            //     photoIndex: (photoIndexPrivate + 1) % privateData.length,
+            //   })
+            // }
+            />
+          )
+        }
+
+        <Modal
+          title="Edit"
+          visible={showEdit}
+
+          footer={[
+            <Button key="back" onClick={() => {
+              this.setState({
+                showEdit: false
+              })
+            }}>
+              Cancel
+            </Button>,
+            <Button key="submit" type="primary" style={{ border: "none", backgroundColor: "#fe8c00", fontWeight: 500 }} onClick={() => {
+              this.handleEditFile(itemEdit)
+            }}>
+              Save
+            </Button>,
+          ]}
+        >
+          <Form.Item
+            label="Name"
+          >
+            <Input onChange={(e) => {
+              this.setState({
+                itemEdit: {
+                  ...itemEdit,
+                  name: e.target.value
+                }
+              })
+            }} value={itemEdit.name || ""} />
+          </Form.Item>
+          <Form.Item
+            label="Status"
+          >
+            <Select onChange={(value) => {
+              this.setState({
+                itemEdit: {
+                  ...itemEdit,
+                  status: value
+                }
+              })
+            }} value={itemEdit.status || "private"} style={{ width: "100%" }} >
+              <Option value="private">Lock</Option>
+              <Option value="public">Public</Option>
+              <Option value="share">Share</Option>
+            </Select>
+          </Form.Item>
+        </Modal>
+
+        <Modal
+          title=""
+          closable={false}
+          style={{ top: 0 }}
+          visible={emailLink}
+          footer={[
+            <Button size="small" onClick={() => this.handleEmailLink(false)}>
+              Close
+            </Button>,
+          ]}
+
+        >
+          <div className="recents__cotent">
+            <div className="recents__cotent__item recents__cotent__item-version " ><strong>Select your email provider</strong></div>
+
+            <div className="recents__cotent__item  recents__cotent__item__author">
+              This link has'nt been opened yet.
+            </div>
+            <div className="recents__cotent__item">
+              <img style={{ height: '40px' }} className="recents__cotent__box__icon recents__cotent__item__img " src="https://i.ibb.co/2P1RwLz/mail-appliaction.png" alt="" />
+              Mail application
+            </div>
+            <div className="recents__cotent__item">
+              <img className="recents__cotent__box__icon recents__cotent__item__img " src="https://i.ibb.co/hKZYqj3/out-look.png" alt="" />
+              Outlook application
+            </div>
+            <div className="recents__cotent__item recents__cotent__item-version ">
+              <img className="recents__cotent__box__icon recents__cotent__item__img " src="https://i.ibb.co/qDBtt57/gmail.png" alt="" />
+              Gmail
+            </div>
+
+            <div
+              onClick={() => {
+                this.handleEmailLink(false);
+                message.success("Link copied to your clip board")
+              }}
+              className="recents__cotent__item"
+            >
+              <img className="recents__cotent__box__icon recents__cotent__item__img " src="https://i.ibb.co/Js4pFVB/copy.png" alt="" />
+              <span className="recents__cotent__item-active">I will past the link manually</span>
+            </div>
+          </div>
+        </Modal>
       </div>
     );
   }

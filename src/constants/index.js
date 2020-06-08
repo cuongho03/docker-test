@@ -1,1 +1,1 @@
-export const apiUploadUrl = "http://128.199.245.207:8080/files"
+export const apiUploadUrl = "http://54.183.107.91:8080/files"
