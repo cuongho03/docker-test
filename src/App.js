@@ -14,7 +14,6 @@ class App extends Component {
     if (window.localStorage.getItem('isUserLoggedIn')) {
       window.localStorage.setItem('isUserLoggedIn', false)
     }
-
     console.log(34242, 31)
   }
 
