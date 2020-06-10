@@ -12,7 +12,7 @@ import UploadFile from "./pages/Upload"
 class App extends Component {
   componentDidMount() {
     window.localStorage.removeItem('isUserLoggedIn')
-    console.log(34242)
+    console.log(34242, 31)
   }
 
   render() {
