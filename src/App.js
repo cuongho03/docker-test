@@ -11,7 +11,8 @@ import Resgister from "./pages/Resgister"
 import UploadFile from "./pages/Upload"
 class App extends Component {
   componentDidMount() {
-    // window.localStorage.removeItem('isUserLoggedIn')
+    window.localStorage.removeItem('isUserLoggedIn')
+    console.log(34242)
   }
 
   render() {

@@ -679,3 +679,6 @@ div .resizer {
 .navbar-fixed-bottom, .navbar-fixed-top {
  z-index: 500;
 }
+.media-object{
+  object-fit: cover
+}
