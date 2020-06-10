@@ -10,7 +10,7 @@ function signUp(data) {
 }
 
 function Login(data) {
-  const path = url
+  const path = url + "/login"
   return add(path, data)
 }
 
