@@ -43,8 +43,7 @@ export function login(formData) {
   const data = {
     user: {
       email,
-      password,
-      publicKey: email
+      password
     }
   }
   return new Promise(async (resolve, reject) => {
