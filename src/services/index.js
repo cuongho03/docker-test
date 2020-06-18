@@ -2,13 +2,15 @@ import requestService from './request'
 
 export const all = (
   path,
-  filter = {}
+  filter = {},
+  headers = {},
 ) => {
 
   return requestService.send({
     method: 'get',
     path,
     query: { ...filter },
+    headers
   })
 }
 
@@ -19,12 +21,13 @@ export const view = (path) => {
   })
 }
 
-export const add = (path, data, query = {}) => {
+export const add = (path, data, query = {}, headers = {}) => {
   return requestService.send({
     method: 'post',
     path,
     data,
-    query
+    query,
+    headers
   })
 }
 

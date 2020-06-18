@@ -27,7 +27,7 @@ class UploadFile extends Component {
   render() {
     const props = {
       name: 'file',
-      multiple: false,
+      multiple: true,
       action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
       onChange(info) {
         const { status } = info.file;

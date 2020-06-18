@@ -4,13 +4,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from 'react';
-import { Modal, Form, Input, Button, message, Select, Popconfirm } from 'antd';
+import { Modal, Form, Input, Button, message, Select, Popconfirm, Tooltip } from 'antd';
 import { FirebaseRef } from '../../lib/firebase'
 import Box from '../../components/Drag/box';
 import Dustbin from '../../components/Drag/dustbin'
 import Lightbox from 'react-image-lightbox';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import userService from './../../services/member'
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import './home.scss'
 import 'react-image-lightbox/style.css';
 const { Option } = Select;
@@ -33,6 +35,9 @@ class Home extends Component {
       showEdit: false,
       accessLog: false,
       emailLink: false,
+      userList: [],
+      userShare: null,
+      showAdd: false
     }
     this.title = props.match.params.folder
   }
@@ -59,6 +64,24 @@ class Home extends Component {
       visible: false,
     });
   };
+  fetchUserList() {
+    userService.fetchUserList().then(result => {
+
+      if (result && Object.keys(result).length) {
+        const newData = []
+        Object.keys(result).forEach(key => {
+          const newItem = {
+            id: key,
+            ...result[key]
+          }
+          newData.push(newItem)
+        })
+        this.setState({
+          userList: newData
+        })
+      }
+    })
+  }
   fetchData() {
     const hostName = window.location.hostname
     const arrayHost = hostName.split(".")
@@ -79,6 +102,8 @@ class Home extends Component {
         this.setState({ data: newArray })
       }
     })
+
+    this.fetchUserList()
 
   }
 
@@ -522,6 +547,9 @@ class Home extends Component {
 
   onShare(item) {
     this.handleEmailLink(true)
+    this.setState({
+      itemEdit: item
+    })
   }
 
   handleAccessLog(value) {
@@ -537,7 +565,7 @@ class Home extends Component {
   }
 
   render() {
-    const { titleFolder, data, isPublic, privacyShow, photoIndexPublic, photoIndexPrivate, isOpenPrivate, isOpenPublic, toggle, showEdit, itemEdit, accessLog, emailLink } = this.state
+    const { titleFolder, data, isPublic, privacyShow, photoIndexPublic, photoIndexPrivate, isOpenPrivate, isOpenPublic, toggle, showEdit, itemEdit, userShare, userList, emailLink, showAdd } = this.state
     const privateData = []
     const publicData = []
     const shareData = []
@@ -559,6 +587,7 @@ class Home extends Component {
     if (check) {
       lengthData = Math.ceil(shareData.length / 2)
     }
+    console.log(userList)
     return (
       <div className="App">
         <div id="window" className="window">
@@ -1039,43 +1068,137 @@ class Home extends Component {
           style={{ top: 0 }}
           visible={emailLink}
           footer={[
-            <Button size="small" onClick={() => this.handleEmailLink(false)}>
+            <Button style={{ fontWeight: 500 }} size="small" onClick={() => this.handleEmailLink(false)}>
               Close
             </Button>,
+            <Button className="button__share" style={{ border: "none", backgroundColor: "#fe8c00", fontWeight: 500 }} size="small" onClick={() => {
+              if (userShare && userShare !== "") {
+
+                userService.connectionsUsers({ connection: { to: userShare } }).then(result => {
+                  if (result) {
+                    message.success(`File was shared!`)
+                    this.handleEmailLink(false)
+                    this.setState({
+                      userShare: null
+                    })
+                  } else {
+                    message.error(`Something was wrong!`)
+                  }
+                })
+              } else {
+                message.warn("Please select your docter mail!")
+              }
+            }}>
+              Share
+              </Button>
           ]}
 
         >
           <div className="recents__cotent">
             <div className="recents__cotent__item recents__cotent__item-version " ><strong>Select your email provider</strong></div>
+            <Select
+              showSearch
+              style={{ width: "100%" }}
+              placeholder="Select a person"
 
-            <div className="recents__cotent__item  recents__cotent__item__author">
-              This link has'nt been opened yet.
-            </div>
-            <div className="recents__cotent__item">
-              <img style={{ height: '40px' }} className="recents__cotent__box__icon recents__cotent__item__img " src="https://i.ibb.co/2P1RwLz/mail-appliaction.png" alt="" />
-              Mail application
-            </div>
-            <div className="recents__cotent__item">
-              <img className="recents__cotent__box__icon recents__cotent__item__img " src="https://i.ibb.co/hKZYqj3/out-look.png" alt="" />
-              Outlook application
-            </div>
-            <div className="recents__cotent__item recents__cotent__item-version ">
-              <img className="recents__cotent__box__icon recents__cotent__item__img " src="https://i.ibb.co/qDBtt57/gmail.png" alt="" />
-              Gmail
-            </div>
+              onChange={value => {
 
-            <div
-              onClick={() => {
-                this.handleEmailLink(false);
-                message.success("Link copied to your clip board")
+                this.setState({
+                  userShare: value
+                })
               }}
-              className="recents__cotent__item"
+
+              value={userShare}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
             >
-              <img className="recents__cotent__box__icon recents__cotent__item__img " src="https://i.ibb.co/Js4pFVB/copy.png" alt="" />
-              <span className="recents__cotent__item-active">I will past the link manually</span>
+              {userList.map(item => (
+                <Option key={item.id} value={item.id}>{item.email}</Option>
+
+              ))}
+            </Select>
+            <div style={{ marginTop: "20px" }} className="recents__cotent__item  recents__cotent__item__author">
+              Do you want to add more docter ?
+             &nbsp;
+            <Tooltip title="Add your docter and Save for share your file ?">
+                <Button onClick={() => {
+                  this.setState({
+                    showAdd: !showAdd
+                  })
+                }} style={{ border: "none", backgroundColor: "#fe8c00", fontWeight: 500 }} type="primary" shape="circle" icon={!showAdd ? <PlusOutlined /> : <MinusOutlined />} size={'large'} />
+              </Tooltip>
             </div>
+            {showAdd ? (
+              <Form
+                onFinish={(values) => {
+                  let password = Math.random().toString(36).substring(8);
+                  userService.signUp({
+                    user:
+                      { email: values.email, password, publicKey: values.email, userType: "doctor" }
+                  }).then(result => {
+                    if (result) {
+                      const ref = FirebaseRef.child(`/docter/${password}`)
+                      const { user } = result
+                      const hostName = window.location.hostname
+                      const arrayHost = hostName.split(".")
+                      return ref.set({
+                        email: values.email,
+                        userType: "doctor",
+                        status: "pending",
+                        name: values.name,
+                        patientName: arrayHost[0]
+                      }).then(() => {
+                        message.success("Add email docter successfully!")
+                        this.setState({
+                          showAdd: false,
+                          userShare: user._id
+                        }, () => {
+                          this.fetchUserList()
+                        })
+                      }).catch((err) => {
+                        message.error(err.message)
+                      })
+                    } else {
+                      message.error("Something was wrong")
+                    }
+                  })
+
+
+                }}
+              >
+                <Form.Item name={'name'} label="Name" rules={[{
+                  required: true,
+                  message: "Please input docter's name",
+                },]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name={'email'} label="Email" rules={[
+                  {
+                    type: 'email',
+                    message: 'The input is not valid E-mail!',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input your E-mail!',
+                  },
+                ]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item >
+                  <Button type="primary" htmlType="submit" className="login-form-button" shape="round" style={{ border: "none", backgroundColor: "#fe8c00", fontWeight: 500 }}>
+                    Add docter
+                  </Button>
+
+                </Form.Item>
+              </Form>
+            ) : null}
+
+
+
           </div>
         </Modal>
+
       </div>
     );
   }

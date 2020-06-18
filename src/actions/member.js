@@ -12,7 +12,8 @@ export function signUp(formData) {
     user: {
       email,
       password,
-      publicKey: email
+      publicKey: email,
+      userType: 'patient'
     }
   }
   return new Promise(async (resolve, reject) => {
@@ -20,12 +21,15 @@ export function signUp(formData) {
       console.log(result)
       if (result) {
         const { user = {} } = result
+
         store.dispatch({
           type: USER_DETAILS_UPDATE, data: {
             ...data.user,
             ...user
           }
         })
+
+
         return resolve({ isSuccess: true })
       } else {
 
@@ -43,7 +47,8 @@ export function login(formData) {
   const data = {
     user: {
       email,
-      password
+      password,
+      publicKey: email
     }
   }
   return new Promise(async (resolve, reject) => {

@@ -9,10 +9,10 @@ function uploadFile(file) {
   const form = new FormData();
   form.append('uploadfile', file);
   // const data = objectToFormData({}, form);
-  console.log(form, file)
+
   return requestService.send({
     method: 'post',
-    path: apiUploadUrl,
+    path: apiUploadUrl + '/files',
     data: form,
     query: {},
     headers: headers
