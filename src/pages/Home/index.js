@@ -1100,7 +1100,8 @@ class Home extends Component {
                   userShare,
                   patientName: arrayHost[0],
                   file: itemEdit,
-                  email: window.localStorage.getItem('email')
+                  email: window.localStorage.getItem('email'),
+                  userId: window.localStorage.getItem('id')
                 })
 
                 userService.connectionsUsers({ connection: { to: userShare } }).then(result => {
