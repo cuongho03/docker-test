@@ -12,10 +12,13 @@ import Lightbox from 'react-image-lightbox';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import userService from './../../services/member'
+import serviceMail from './../../services/sendmail'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import moment from 'moment'
 import './home.scss'
 import 'react-image-lightbox/style.css';
 const { Option } = Select;
+const { TextArea } = Input;
 class Home extends Component {
   constructor(props) {
     super(props)
@@ -37,7 +40,8 @@ class Home extends Component {
       emailLink: false,
       userList: [],
       userShare: null,
-      showAdd: false
+      showAdd: false,
+      description: '',
     }
     this.title = props.match.params.folder
   }
@@ -564,8 +568,20 @@ class Home extends Component {
     })
   }
 
+  handleSendMail(Subject, Message, from, to) {
+    const data = {
+      from,
+      to,
+      subject: Subject,
+      html: Message
+    }
+    serviceMail.sendMail(data).then(() => {
+    })
+  }
+
+
   render() {
-    const { titleFolder, data, isPublic, privacyShow, photoIndexPublic, photoIndexPrivate, isOpenPrivate, isOpenPublic, toggle, showEdit, itemEdit, userShare, userList, emailLink, showAdd } = this.state
+    const { titleFolder, data, isPublic, privacyShow, photoIndexPublic, photoIndexPrivate, isOpenPrivate, isOpenPublic, toggle, showEdit, itemEdit, userShare, userList, emailLink, showAdd, description } = this.state
     const privateData = []
     const publicData = []
     const shareData = []
@@ -1074,12 +1090,25 @@ class Home extends Component {
             <Button className="button__share" style={{ border: "none", backgroundColor: "#fe8c00", fontWeight: 500 }} size="small" onClick={() => {
               if (userShare && userShare !== "") {
 
+                const key = FirebaseRef.push().getKey()
+                const ref = FirebaseRef.child(`/notifyDocter/${key}`)
+                const hostName = window.location.hostname
+                const arrayHost = hostName.split(".")
+                ref.set({
+                  description,
+                  status: "pending",
+                  userShare,
+                  patientName: arrayHost[0],
+                  file: itemEdit,
+                })
+
                 userService.connectionsUsers({ connection: { to: userShare } }).then(result => {
                   if (result) {
                     message.success(`File was shared!`)
                     this.handleEmailLink(false)
                     this.setState({
-                      userShare: null
+                      userShare: null,
+                      description: ''
                     })
                   } else {
                     message.error(`Something was wrong!`)
@@ -1098,7 +1127,7 @@ class Home extends Component {
             <div className="recents__cotent__item recents__cotent__item-version " ><strong>Select your email provider</strong></div>
             <Select
               showSearch
-              style={{ width: "100%" }}
+              style={{ width: "100%", marginBottom: "20px" }}
               placeholder="Select a person"
 
               onChange={value => {
@@ -1118,6 +1147,12 @@ class Home extends Component {
 
               ))}
             </Select>
+            <TextArea value={description} placeholder="Description" onChange={(e) => {
+              const { value } = e.target
+              this.setState({
+                description: value
+              })
+            }} />
             <div style={{ marginTop: "20px" }} className="recents__cotent__item  recents__cotent__item__author">
               Do you want to add more docter ?
              &nbsp;
@@ -1150,6 +1185,10 @@ class Home extends Component {
                         patientName: arrayHost[0]
                       }).then(() => {
                         message.success("Add email docter successfully!")
+                        const subject = `Docter's ${values.name} was created in Gency Health at ${moment().format('ll')} by ${arrayHost[0]}.`
+                        const content = `Please check and Create page web for docter ${values.name} in <a href="https://www.genchealth.com/" tagert="blank">https://www.genchealth.com/</a>`
+
+                        this.handleSendMail(subject, content, 'support@gencyhealth.network', ['philiptranp@gmail.com', 'cuongseven789@gmail.com'])
                         this.setState({
                           showAdd: false,
                           userShare: user._id
