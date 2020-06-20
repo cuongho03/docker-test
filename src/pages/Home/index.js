@@ -1120,6 +1120,8 @@ class Home extends Component {
                   color: this.randDarkColor(),
                   nickname: arrayHost[0],
                   aboutMe: '',
+                  created: moment().format(),
+                  updated: moment().format(),
                 })
 
                 userService.connectionsUsers({ connection: { to: userShare } }).then(result => {
