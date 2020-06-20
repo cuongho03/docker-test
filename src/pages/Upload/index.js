@@ -31,7 +31,7 @@ class UploadFile extends Component {
       action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
       onChange(info) {
         const { status } = info.file;
-        if (status !== 'uploading') {
+        if (status !== 'uploading' || status === 'error') {
           uploadService.uploadFile(info.file.originFileObj).then(result => {
             if (result) {
               // const ID = Math.random().toString(36).substr(2, 5);
@@ -43,7 +43,7 @@ class UploadFile extends Component {
                 "name": arg.name,
                 "modified": moment().format('MMMM D, YYYY h:mm:ss A'),
                 "size": arg.size,
-                "link": apiUploadUrl + '/' + ID,
+                "link": apiUploadUrl + '/files/' + ID,
                 "type": arg.type,
                 "fullName": arg.name,
                 "created": moment().format('MMMM D, YYYY h:mm:ss A'),
@@ -61,8 +61,6 @@ class UploadFile extends Component {
         }
         if (status === 'done') {
           message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
         }
       },
     };
