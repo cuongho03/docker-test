@@ -78,7 +78,10 @@ class Home extends Component {
             id: key,
             ...result[key]
           }
-          newData.push(newItem)
+          if (newItem.userType === "doctor") {
+            newData.push(newItem)
+          }
+
         })
         this.setState({
           userList: newData
@@ -655,6 +658,11 @@ class Home extends Component {
                   <div className="col-xs-1-me">
                     <div className="icon-bottom">
                       <i className="fa fa-envelope fa-2x" />
+                    </div>
+                  </div>
+                  <div onClick={() => { this.props.history.push("/live-chat") }} className="col-xs-1-me">
+                    <div className="icon-bottom">
+                      <i className="fa fa-commenting-o fa-2x" />
                     </div>
                   </div>
                   <div className="col-xs-1-me" id="a1">

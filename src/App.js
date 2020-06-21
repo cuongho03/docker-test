@@ -9,7 +9,25 @@ import 'antd/dist/antd.css';
 import Home from "./pages/Home"
 import Resgister from "./pages/Resgister"
 import UploadFile from "./pages/Upload"
+import LiveChat from "./pages/LiveChat"
+import { toast, ToastContainer } from 'react-toastify'
+
 class App extends Component {
+  showToast(type, message) {
+    // 0 = warning, 1 = success
+    switch (type) {
+      case 0:
+        toast.warning(message)
+        break
+      case 1:
+        toast.success(message)
+        break
+      default:
+        break
+    }
+  }
+
+
 
   render() {
     const { member = {} } = this.props
@@ -21,6 +39,11 @@ class App extends Component {
             <Route path="/upload" component={UploadFile} />
           ) : null
           }
+          {isUserLoggedIn ? (
+            <Route path="/live-chat" component={(props) => <LiveChat  {...props} showToast={(type, message) => this.showToast(type, message)} logout={() => { }} member={member} />} />
+          ) : null
+          }
+
 
           {isUserLoggedIn ? (
             <Route path="/" component={Home} />

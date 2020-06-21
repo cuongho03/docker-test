@@ -21,10 +21,12 @@
     "react-dom": "^16.13.1",
     "react-image-lightbox": "^5.1.1",
     "react-intercom": "^1.0.15",
+    "react-loading": "^2.0.3",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-tiny-link": "^3.4.0",
+    "react-toastify": "^6.0.5",
     "redux": "^4.0.5"
   },
   "scripts": {

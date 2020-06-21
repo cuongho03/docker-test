@@ -1,5 +1,5 @@
 
-window.localStorage.removeItem('isUserLoggedIn')
+// window.localStorage.removeItem('isUserLoggedIn')
 const initialState = {
   isUserLoggedIn: !!window.localStorage.getItem('isUserLoggedIn'),
   email: window.localStorage.getItem('email') || '',
