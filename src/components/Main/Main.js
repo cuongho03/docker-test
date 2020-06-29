@@ -56,8 +56,6 @@ class Main extends Component {
         const newData = []
         console.log(result)
         Object.keys(result).forEach(key => {
-
-
           if (result[key].userType === "doctor") {
             let nickName = ''
             if (result[key].email) {
