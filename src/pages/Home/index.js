@@ -445,9 +445,9 @@ class Home extends Component {
 
 
   openabout() {
-    var aboutOverlay = document.getElementById('about-overlay');
-    aboutOverlay.style.transform = "scale(1)";
-    document.getElementById('a5').style.display = "block";
+    // var aboutOverlay = document.getElementById('about-overlay');
+    // aboutOverlay.style.transform = "scale(1)";
+    // document.getElementById('a5').style.display = "block";
   }
 
   closeabout() {

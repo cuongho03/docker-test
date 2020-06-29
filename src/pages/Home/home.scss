@@ -68,3 +68,31 @@
 .icon-bottom{
   cursor: pointer !important;
 }
+
+@media(max-width: 768px) {
+.col-xs-3 {
+    width: 61%;
+}
+.start-window {
+  height: 100vh !important;
+  }
+.first-column{
+  min-height: unset!important;
+}
+.second-column, .third-column {
+  height: auto!important;
+}
+.col-xs-8 .box,.col-xs-4 .box{
+  width: 50%!important;
+  float: unset !important;
+}
+.start-window .second-column{
+  padding-left: 0px !important;
+}
+.head-med .mouse-prient{
+  padding-left: 10px !important;
+}
+.media-object{
+  width: 100% !important;
+}
+}
