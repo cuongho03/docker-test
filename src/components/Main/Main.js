@@ -54,6 +54,7 @@ class Main extends Component {
 
       if (result && Object.keys(result).length) {
         const newData = []
+        console.log(result)
         Object.keys(result).forEach(key => {
 
 
