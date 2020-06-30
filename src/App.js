@@ -31,8 +31,8 @@ class App extends Component {
 
   render() {
     const { member = {} } = this.props
-    // const { isUserLoggedIn } = member
-    const isUserLoggedIn = true
+    const { isUserLoggedIn } = member
+
     return (
       <Router>
         <Switch>
