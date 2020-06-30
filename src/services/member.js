@@ -15,6 +15,7 @@ function connectionsUsers(data) {
 
 function signUp(data) {
   const path = url + "/users"
+  console.log(data)
   return add(path, data)
 }
 
