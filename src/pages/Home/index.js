@@ -631,7 +631,7 @@ class Home extends Component {
               <h4>All about GenC Platform</h4>
 
               <div style={{ position: 'relative', height: 0, paddingBottom: '56.25%', width: '400px' }}>
-                <iframe src="https://www.youtube.com/embed/VUPtvK28fhY?ecver=2" style={{ position: 'absolute', width: '100%', height: '100%', left: 0 }} width={640} height={360} frameBorder={0} allowFullScreen />
+                <iframe src="https://www.youtube.com/watch?v=9zlUNw3y5rg" style={{ position: 'absolute', width: '100%', height: '100%', left: 0 }} width={640} height={360} frameBorder={0} allowFullScreen />
               </div>
               <a className="btn btn-primary center-block text-center" onClick={() => { this.openabout() }}>About Me</a>
             </div>
