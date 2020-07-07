@@ -31,7 +31,7 @@ class UploadFile extends Component {
       action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
       onChange(info) {
         const { status } = info.file;
-        if (status !== 'uploading' || status === 'error') {
+        if (status === 'done' || status === 'error') {
           uploadService.uploadFile(info.file.originFileObj).then(result => {
             if (result) {
               // const ID = Math.random().toString(36).substr(2, 5);
@@ -51,17 +51,16 @@ class UploadFile extends Component {
               }
 
               const ref = FirebaseRef.child(`${arrayHost[0]}/files/${ID}`)
-              return ref.set({
+              ref.set({
                 ...dataFile
               }).catch((err) => {
                 message.error(err.message)
               })
+              message.success(`${info.file.name} file uploaded successfully.`);
             }
           })
         }
-        if (status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully.`);
-        }
+
       },
     };
 
