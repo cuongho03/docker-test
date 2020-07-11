@@ -15,6 +15,7 @@ import userService from './../../services/member'
 import serviceMail from './../../services/sendmail'
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import moment from 'moment'
+import jwt from "jsonwebtoken"
 import './home.scss'
 import 'react-image-lightbox/style.css';
 const { Option } = Select;
@@ -22,6 +23,16 @@ const { TextArea } = Input;
 class Home extends Component {
   constructor(props) {
     super(props)
+    const token = jwt.sign({
+      id: localStorage.getItem("id"),
+
+    },
+      localStorage.getItem("id"),
+      {
+        algorithm: 'HS256',
+        expiresIn: 24
+      }
+    );
     this.state = {
       titleFolder: "Public Files",
       expanStaus: false,
@@ -43,8 +54,30 @@ class Home extends Component {
       showAdd: false,
       description: '',
     }
+    this.link = origin + `/Collections/${token}`;
     this.title = props.match.params.folder
   }
+
+  copyToClipboard(text) {
+    var selected = false;
+    var el = document.createElement('textarea');
+    el.value = text;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    if (document.getSelection().rangeCount > 0) {
+      selected = document.getSelection().getRangeAt(0)
+    }
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    if (selected) {
+      document.getSelection().removeAllRanges();
+      document.getSelection().addRange(selected);
+    }
+  }
+
 
   showModal = () => {
     this.setState({
@@ -625,7 +658,17 @@ class Home extends Component {
     return (
       <div className="App">
         <div id="window" className="window">
+          <div onClick={() => {
 
+            this.copyToClipboard(this.link);
+            message.success("Copy link succesfully!")
+
+          }}
+            style={{ marginTop: '50px', marginLeft: '5px', minWidth: "100px", textAlign: 'center' }}
+            className="icon-computer text-center">
+            <img width="60" height="60" src="/assets/img/copyIcon.png" className="img-responsive" />
+            <p>Copy Link Upload</p>
+          </div>
           <section className="option-box">
             <div className="color-box">
               <h4>All about GenC Platform</h4>

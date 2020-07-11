@@ -10,6 +10,7 @@ import Home from "./pages/Home"
 import Resgister from "./pages/Resgister"
 import UploadFile from "./pages/Upload"
 import LiveChat from "./pages/LiveChat"
+import Collection from "./pages/Colletion"
 import { toast, ToastContainer } from 'react-toastify'
 
 class App extends Component {
@@ -31,11 +32,12 @@ class App extends Component {
 
   render() {
     const { member = {} } = this.props
-    const { isUserLoggedIn } = member
-
+    // const { isUserLoggedIn } = member
+    const isUserLoggedIn = true
     return (
       <Router>
         <Switch>
+          <Route path="/Collections/:token" component={Collection} />
           {isUserLoggedIn ? (
             <Route path="/upload" component={UploadFile} />
           ) : null
