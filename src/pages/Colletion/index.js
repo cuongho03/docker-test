@@ -54,7 +54,7 @@ class Colletion extends Component {
                 "type": arg.type,
                 "fullName": arg.name,
                 "created": moment().format('MMMM D, YYYY h:mm:ss A'),
-                "status": "private"
+                "status": "public"
               }
 
               const ref = FirebaseRef.child(`${arrayHost[0]}/files/${ID}`)
