@@ -1,6 +1,6 @@
 
 
-import { USER_DETAILS_UPDATE, USER_LOGIN, USER_RESET } from '../constants/memberTypes'
+import { USER_DETAILS_UPDATE, USER_LOGIN } from '../constants/memberTypes'
 import store from '../store'
 import serviceUser from "../services/member"
 /**

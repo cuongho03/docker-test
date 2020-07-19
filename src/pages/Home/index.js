@@ -123,9 +123,10 @@ class Home extends Component {
     })
   }
   fetchData() {
-    const hostName = window.location.hostname
-    const arrayHost = hostName.split(".")
-    let ref = FirebaseRef.child(`${arrayHost[0]}/files`)
+    const uid = window.localStorage.getItem('id')
+    // const hostName = window.location.hostname
+    // const arrayHost = hostName.split(".")
+    let ref = FirebaseRef.child(`${uid}/files`)
     ref.on('value', snapshot => {
       const data = snapshot.val()
       if (data && typeof (data) === 'object') {
@@ -536,11 +537,12 @@ class Home extends Component {
   }
 
   handleDrag(data) {
-    const hostName = window.location.hostname
-    const arrayHost = hostName.split(".")
+    // const hostName = window.location.hostname
+    // const arrayHost = hostName.split(".")
+    const uid = window.localStorage.getItem('id')
     data.status = 'share'
     data.type = data.type2
-    const ref = FirebaseRef.child(`${arrayHost[0]}/files/${data.id}`).set({
+    const ref = FirebaseRef.child(`${uid}/files/${data.id}`).set({
       ...data
     }).catch((err) => {
       message.error(err.message)
@@ -548,9 +550,10 @@ class Home extends Component {
   }
 
   onConfirm(data) {
-    const hostName = window.location.hostname
-    const arrayHost = hostName.split(".")
-    const ref = FirebaseRef.child(`${arrayHost[0]}/files/${data.id}`)
+    // const hostName = window.location.hostname
+    // const arrayHost = hostName.split(".")
+    const uid = window.localStorage.getItem('id')
+    const ref = FirebaseRef.child(`${uid}/files/${data.id}`)
 
     ref.remove().then(() => {
 
@@ -568,10 +571,11 @@ class Home extends Component {
   }
 
   handleEditFile(itemEdit) {
-    const hostName = window.location.hostname
-    const arrayHost = hostName.split(".")
+    // const hostName = window.location.hostname
+    // const arrayHost = hostName.split(".")
+    const uid = window.localStorage.getItem('id')
 
-    const ref = FirebaseRef.child(`${arrayHost[0]}/files/${itemEdit.id}`).set({
+    const ref = FirebaseRef.child(`${uid}/files/${itemEdit.id}`).set({
       ...itemEdit,
 
     }).then(() => {
@@ -1158,15 +1162,17 @@ class Home extends Component {
 
                 const key = FirebaseRef.push().getKey()
                 const ref = FirebaseRef.child(`/notifyDocter/${key}`)
-                const hostName = window.location.hostname
-                const arrayHost = hostName.split(".")
+                const email = window.localStorage.getItem('email')
+                const arrayHost = email.split("@")
+                const uid = window.localStorage.getItem('id')
+
                 ref.set({
                   description,
                   status: "pending",
                   userShare,
-                  patientName: arrayHost[0],
+                  patientName: uid,
                   file: itemEdit,
-                  email: window.localStorage.getItem('email'),
+                  email,
                   userId: window.localStorage.getItem('id'),
                   color: this.randDarkColor(),
                   nickname: arrayHost[0],
@@ -1248,14 +1254,16 @@ class Home extends Component {
                     if (result) {
                       const ref = FirebaseRef.child(`/docter/${password}`)
                       const { user } = result
-                      const hostName = window.location.hostname
-                      const arrayHost = hostName.split(".")
+                      const email = window.localStorage.getItem('email')
+                      const arrayHost = email.split("@")
+                      const uid = window.localStorage.getItem('id')
+
                       return ref.set({
                         email: values.email,
                         userType: "doctor",
                         status: "pending",
                         name: values.name,
-                        patientName: arrayHost[0]
+                        patientName: uid
                       }).then(() => {
                         message.success("Add email docter successfully!")
                         const subject = `Docter's ${values.name} was created in Gency Health at ${moment().format('ll')} by ${arrayHost[0]}.`

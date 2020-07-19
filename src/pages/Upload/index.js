@@ -36,8 +36,7 @@ class UploadFile extends Component {
             if (result) {
               // const ID = Math.random().toString(36).substr(2, 5);
               const arg = info.file.originFileObj
-              const hostName = window.location.hostname
-              const arrayHost = hostName.split(".")
+              const uid = window.localStorage.getItem('id')
               const { ID } = result
               const dataFile = {
                 "name": arg.name,
@@ -50,7 +49,7 @@ class UploadFile extends Component {
                 "status": "private"
               }
 
-              const ref = FirebaseRef.child(`${arrayHost[0]}/files/${ID}`)
+              const ref = FirebaseRef.child(`${uid}/files/${ID}`)
               ref.set({
                 ...dataFile
               }).catch((err) => {
