@@ -32,6 +32,7 @@ class UploadFile extends Component {
       onChange(info) {
         const { status } = info.file;
         if (status === 'done' || status === 'error') {
+
           uploadService.uploadFile(info.file.originFileObj).then(result => {
             if (result) {
               // const ID = Math.random().toString(36).substr(2, 5);

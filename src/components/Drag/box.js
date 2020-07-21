@@ -11,7 +11,7 @@ export default function Box(props) {
   const [, drag] = useDrag({ item: { ...item, type: 'box' } })
   return (
 
-    <div data-toggle="tooltip" data-placement="top" title={item.fullName || 'N/A'} ref={drag} className={`media ${className}`} >
+    <div data-toggle="tooltip" data-placement="top" title={item.source ? `source: ${item.source}, address: ${item.provided} ` : item.fullName} ref={drag} className={`media ${className}`} >
       <div onClick={() => { if (onClick) { onClick() } }} className="media-left">
         <a href="#">
           <img className="media-object" src={(item.type === 'image/png' || item.type === 'image/jpeg' || item.type === 'image/jpg') ? item.link : "https://i.ibb.co/d5pWRyG/file-img.png"} width={35} height={35} alt="" />
