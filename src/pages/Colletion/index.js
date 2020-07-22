@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Upload, message, notification, Modal, Button, Form, Input, } from 'antd';
+import { Upload, notification, Modal, Form, Input, Button } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 
 import uploadService from './../../services/uploadFile'
@@ -14,11 +14,14 @@ class Colletion extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      visible: false,
+      visible: true,
       source: "",
       provided: "",
-      fileNow: null,
-
+      info: null,
+      visible2: false,
+      note: "",
+      loading: false,
+      arrayUpload: []
     }
     this.token = props.match.params.token
   }
@@ -34,20 +37,13 @@ class Colletion extends Component {
       myWindow.style.height = window.innerHeight + "px";
     }
   }
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
 
   handleOk = e => {
-    const { fileNow } = this.state
     this.setState({
       visible: false,
     });
-    this.handleUpload(fileNow)
-  };
 
+  };
 
   handleOnChange(name, value) {
     this.setState({
@@ -55,8 +51,11 @@ class Colletion extends Component {
     })
   }
 
-  handleUpload(info) {
-    const { source, provided } = this.state
+  handleUpload() {
+    const { source, provided, note, info, arrayUpload } = this.state
+    this.setState({
+      loading: true
+    })
     uploadService.uploadFile(info.file.originFileObj).then(result => {
       if (result) {
         // const ID = Math.random().toString(36).substr(2, 5);
@@ -64,6 +63,7 @@ class Colletion extends Component {
         const arg = info.file.originFileObj
         // const hostName = window.location.hostname
         // const arrayHost = hostName.split(".")
+
         const { ID } = result
         const dataFile = {
           "name": arg.name,
@@ -75,22 +75,47 @@ class Colletion extends Component {
           "created": moment().format('MMMM D, YYYY h:mm:ss A'),
           "status": "public",
           "source": source !== "" ? source : "Not provided",
-          "provided": provided !== "" ? provided : "Not provided"
+          "provided": provided !== "" ? provided : "Not provided",
+          "note": note !== "" ? note : "Not provided",
+          "ID": ID,
+          "uid": arg.uid
         }
 
         const ref = FirebaseRef.child(`${uid}/files/${ID}`)
         ref.set({
           ...dataFile
-        }).catch((err) => {
-          message.error(err.message)
+        }).then(() => {
+          const newData = [...arrayUpload, { ...dataFile }]
+          this.setState({
+            arrayUpload: newData
+          })
+          this.openNotificationWithIcon('success', `Action successfully`, `${info.file.name} file uploaded successfully.`)
+        }
+        ).catch((err) => {
+          this.openNotificationWithIcon('error', `Action fail`, `${err.message}`)
+
         })
-        message.success(`${info.file.name} file uploaded successfully.`);
+
+
+
       }
+      this.setState({
+        visible2: false,
+        note: '',
+        loading: false
+      })
     })
   }
 
+  openNotificationWithIcon = (type, title, description) => {
+    notification[type]({
+      message: title,
+      description: description,
+    });
+  };
+
   render() {
-    const { visible, provided, source, fileNow } = this.state
+    const { visible, provided, source, visible2, note, loading } = this.state
     const that = this
     const props = {
       name: 'file',
@@ -100,18 +125,41 @@ class Colletion extends Component {
         const { status } = info.file;
         if (status === 'done' || status === 'error') {
 
-          if (fileNow) {
-            that.handleUpload(info)
-          } else {
-            that.setState({
-              visible: true,
-              fileNow: info
-            })
-          }
+          // if (info) {
+          //   that.handleUpload(info)
+          // } else {
+          that.setState({
+            visible2: true,
+            info: info
+          })
+          // }
 
         }
 
       },
+      onRemove(file) {
+        const { arrayUpload } = that.state
+        const uid = window.localStorage.getItem('id')
+        const index = arrayUpload.findIndex(item => item.uid === file.uid)
+        const newArrayUpload = arrayUpload.filter(item => item.uid !== file.uid)
+        if (index > -1 && arrayUpload[index].ID) {
+
+          const ref = FirebaseRef.child(`${uid}/files/${arrayUpload[index].ID}`)
+          ref.remove().then(() => {
+            that.openNotificationWithIcon('success', `Action successfully`, `Remove file successfully.`)
+            that.setState({
+              arrayUpload: newArrayUpload
+            })
+          }
+          ).catch((err) => {
+            that.openNotificationWithIcon('error', `Action fail`, `${err.message}`)
+            return false
+          })
+        } else {
+          return false
+        }
+
+      }
     };
 
     return (
@@ -122,20 +170,24 @@ class Colletion extends Component {
 
           <div className="clearfix" />
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: "100vh" }} className="container">
+            {
+              !visible ? (
 
-            <div>
-              <Dragger style={{ padding: "10px" }} {...props}>
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                <p className="ant-upload-hint">
-                  Support for a single or bulk upload. Strictly prohibit from uploading company data or other
-                  band files
-              </p>
-              </Dragger>
-            </div>
+                <div>
+                  <Dragger style={{ padding: "10px" }} {...props}>
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    <p className="ant-upload-hint">
+                      Support for a single or bulk upload. Strictly prohibit from uploading company data or other
+                      band files
+                  </p>
+                  </Dragger>
+                </div>
 
+              ) : null
+            }
 
           </div>
         </div>
@@ -177,6 +229,34 @@ class Colletion extends Component {
 
           </Form>
         </Modal>
+
+        <Modal
+          title="A few notes about the file if any."
+          visible={visible2}
+          onOk={() => { this.handleUpload() }}
+          onCancel={() => { this.handleUpload() }}
+          footer={[
+            <Button key="back" onClick={() => { this.handleUpload() }}>
+              Cancel
+            </Button>,
+            <Button key="submit" type="primary" loading={loading} onClick={() => { this.handleUpload() }}>
+              Ok
+            </Button>,
+          ]}
+        >
+          <Form layout="vertical" name="note" >
+
+            <Form.Item label="Note">
+              <Input.TextArea rows={5} onChange={(e) => {
+                const { name, value } = e.target
+                this.handleOnChange(name, value)
+              }} name="note" value={note} />
+            </Form.Item>
+
+
+          </Form>
+        </Modal>
+
 
       </div>
 
